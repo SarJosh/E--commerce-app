@@ -1,42 +1,40 @@
 import { useRouter } from "expo-router";
 import { useState, useContext } from "react";
-import { Alert, Button, TextInput, View } from "react-native";
+import { Alert, Button, TextInput } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { StatusBar } from "expo-status-bar";
+
 import { AuthContext } from "../context/AuthContext";
-import { useCart } from "../context/CartContext"; // ✅ FIX
+import { useCart } from "../context/CartContext";
 
 export default function Checkout() {
   const [address, setAddress] = useState("");
 
-  const { clearCart, cartItems, getTotal } = useCart(); // ✅ FIX
+  const { clearCart, cartItems, getTotal } = useCart();
   const { guest } = useContext(AuthContext);
 
   const router = useRouter();
 
   const handleCheckout = () => {
     if (guest) {
-      Alert.alert("Login Required", "Please login to continue checkout");
+      Alert.alert("Login Required");
       router.push("/(auth)/login");
       return;
     }
 
     if (!address) {
-      Alert.alert("Error", "Please enter delivery address");
+      Alert.alert("Enter address");
       return;
     }
 
-    if (!cartItems.length) {
-      Alert.alert("Cart Empty", "Add items before checkout");
-      return;
-    }
-
-    clearCart(); // ✅ FIX (instead of dispatch)
-
+    clearCart();
     router.replace("/success");
   };
 
   return (
-    <View style={{ padding: 20 }}>
-      
+    <SafeAreaView style={{ flex: 1, padding: 20 }}>
+      <StatusBar style="dark" />
+
       <TextInput
         placeholder="Delivery Address"
         value={address}
@@ -45,7 +43,7 @@ export default function Checkout() {
           backgroundColor: "#fff",
           padding: 12,
           borderRadius: 10,
-          marginBottom: 15,
+          marginBottom: 20,
         }}
       />
 
@@ -53,6 +51,6 @@ export default function Checkout() {
         title={`Confirm Order ($${getTotal().toFixed(2)})`}
         onPress={handleCheckout}
       />
-    </View>
+    </SafeAreaView>
   );
 }
