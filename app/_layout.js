@@ -1,38 +1,33 @@
 import { Stack } from "expo-router";
-import { StatusBar } from "expo-status-bar";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+
 import { AuthProvider } from "../context/AuthContext";
 import { CartProvider } from "../context/CartContext";
-import { ThemeProvider, useTheme } from "../context/ThemeContext";
+import { ThemeProvider } from "../context/ThemeContext";
 import { WishlistProvider } from "../context/WishlistContext";
 import { UserProvider } from "../context/UserContext";
 
-// 🔥 Separate component to access theme
-function RootLayoutContent() {
-  const { theme } = useTheme();
-
-  return (
-    <>
-      
-      <StatusBar style={theme.dark ? "light" : "dark"} />
-
-      {/* ✅ NAVIGATION */}
-      <Stack screenOptions={{ headerShown: false }} />
-    </>
-  );
-}
-
 export default function RootLayout() {
   return (
-    <ThemeProvider>
-      <AuthProvider>
-        <WishlistProvider>
-          <UserProvider>
-            <CartProvider>
-              <RootLayoutContent />
-            </CartProvider>
-          </UserProvider>
-        </WishlistProvider>
-      </AuthProvider>
-    </ThemeProvider>
+    <SafeAreaProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <WishlistProvider>
+            <UserProvider>
+              <CartProvider>
+
+                <Stack screenOptions={{ headerShown: false }}>
+                  <Stack.Screen name="(tabs)" />
+                  <Stack.Screen name="product" />
+                  <Stack.Screen name="checkout" />
+                  <Stack.Screen name="success" />
+                </Stack>
+
+              </CartProvider>
+            </UserProvider>
+          </WishlistProvider>
+        </AuthProvider>
+      </ThemeProvider>
+    </SafeAreaProvider>
   );
 }
